@@ -1,49 +1,42 @@
-function doPost(e) {
+// web app
+// Postリクエストを受け付けた場合の処理
+// 　　リクエストに含まれるJSONデータをパースして処理
+// 　　　sheet_name:データを追加するシート名
+// 　　　temperature:データ本体
 
-  // var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('sensor1');
+function doPost(e) {
   
-  // 送信されてくるJSONデータ　{"item":"name"}　から、要素を取り出す
+  // 送信されてくるJSONデータ　{"temperature":value}　から、要素を取り出す
   var params = JSON.parse(e.postData.getDataAsString());
-  // var temp_1 = params.temp_1;
-  // var temp_2 = params.temp_2;
-  var item = params.item;
   var sheet_name = params.sheet_name;
-  console.log(sheet_name);
-  console.log(item);
+  var temperature = params.temperature;
+  var humidity = params.humidity;
+  var pressure = params.pressure;
+
+  // console.log(sheet_name);
+  // console.log(temperature);
+
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheet_name);
   if (!sheet) {
    //　指定したシートがない場合の処理;
    addSheet(sheet_name);
    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheet_name);
+   sheet.getRange(1, 1).setValue('Date-Time');
+   sheet.getRange(1, 2).setValue('temperature');
+   sheet.getRange(1, 3).setValue('humidity');
+   sheet.getRange(1, 4).setValue('pressure');
   }
 
   // データをシートに追加
   sheet.insertRows(2,1);  // 2行1列目に列を挿入する
-  sheet.getRange(2, 1).setValue(new Date());     // 受信日時を記録
-  // sheet.getRange(2, 2).setValue(temp_1);     // temp_1を記録
-  // sheet.getRange(2, 3).setValue(temp_2);     // temp_2を記録
-  sheet.getRange(2, 2).setValue(item);     // temp_2を記録
-  sheet.getRange(2, 3).setValue(sheet_name);     // temp_2を記録
+  sheet.getRange(2, 1).setValue(new Date());      // 受信日時を記録
+  sheet.getRange(2, 2).setValue(temperature);     // 温度を記録
+  sheet.getRange(2, 3).setValue(humidity);        // 湿度を記録
+  sheet.getRange(2, 4).setValue(pressure);        // 気圧を記録
 
-  return HtmlService.createHtmlOutput('<b>Got it</b>');
+  return; // エラーかどうかを返した方がいいかも
+  // return HtmlService.createHtmlOutput('<b>Got it</b>');
   // return ContentService.createTextOutput("受付けました。");
-}
-
-function addSheet(newSheetName='addsheet_1') {
-  // アクティブなスプレッドシートを取得
-  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-
-  // 追加するシートの名前を指定
-  // var newSheetName = "New Sheet Name";
-
-  // 同じ名前のシートが存在しないか確認
-  if (!spreadsheet.getSheetByName(newSheetName)) {
-    // 新しいシートを作成
-    spreadsheet.insertSheet(newSheetName);
-    Logger.log("Sheet added successfully: " + newSheetName);
-  } else {
-    Logger.log("Sheet with the name '" + newSheetName + "' already exists.");
-  }
 }
 
 
