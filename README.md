@@ -16,11 +16,15 @@
 このリポジトリのルート部分にはGASのコードが保管されています。
 
 # システムの全体像
-![IoTbyGAS drawio](https://github.com/user-attachments/assets/4c111529-d952-4342-8cfb-659fac1c3e97)
+<br>
+<img src="https://github.com/user-attachments/assets/4c111529-d952-4342-8cfb-659fac1c3e97" width="500">
+<br><br>
 
 この図にしめしたように、google sheet 内にGASを通じてHTTPプロトコル(POSTメソッド)でデータを送ります。<br>
 送られたデータはスプレッドシート上に受信時間のタイムスタンプと共に記録され、シートを開くことで人間が直接確認することができます。<br>
 送られるデータはJSONフォーマットで、JSONのキー名に対応するデータをシート上のどの列に書き込むかはGASスクリプトで決めています。
-![googleSheets_example](https://github.com/user-attachments/assets/75e31621-432e-40fd-957b-bf36b398cefd)
 
+<br>
+<img src="https://github.com/user-attachments/assets/75e31621-432e-40fd-957b-bf36b398cefd" width="500">
+<br><br>
 将来の拡張として、HTTPでの読み出しリクエストに応答して、表内（保存データ）の一部のデータや、統計データなどを返すようなスクリプトも記述が可能かと思います。
