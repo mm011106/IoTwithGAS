@@ -6,9 +6,9 @@
 
 function doPost(e) {
   
-  // 送信されてくるJSONデータ　{"temperature":value}　から、要素を取り出す
+  // 送信されてくるJSONデータから、要素を取り出す
   var params = JSON.parse(e.postData.getDataAsString());
-  var sheet_name = params.sheet_name;
+  var sheet_name = params.sheet_name;   //"sheet_name"のデータを取り出す
   var temperature = params.temperature;
   var humidity = params.humidity;
   var pressure = params.pressure;
@@ -18,13 +18,14 @@ function doPost(e) {
 
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheet_name);
   if (!sheet) {
-   //　指定したシートがない場合の処理;
-   addSheet(sheet_name);
-   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheet_name);
-   sheet.getRange(1, 1).setValue('Date-Time');
-   sheet.getRange(1, 2).setValue('temperature');
-   sheet.getRange(1, 3).setValue('humidity');
-   sheet.getRange(1, 4).setValue('pressure');
+    //　指定したシートがない場合の処理;
+    //  シートを作成し、ヘッダ行を追記
+    addSheet(sheet_name);
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheet_name);
+    sheet.getRange(1, 1).setValue('Date-Time');
+    sheet.getRange(1, 2).setValue('temperature');
+    sheet.getRange(1, 3).setValue('humidity!!');
+    sheet.getRange(1, 4).setValue('pressure');
   }
 
   // データをシートに追加
