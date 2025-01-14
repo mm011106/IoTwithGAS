@@ -5,26 +5,45 @@
 // 　　　temperature:データ本体
 
 function doPost(e) {
-  
   // 送信されてくるJSONデータから、要素を取り出す
-  var params = JSON.parse(e.postData.getDataAsString());
+  //  JSONデータがついていないPOSTではテストデータを使う
+  try{
+    var params = JSON.parse(e.postData.getDataAsString());
+    Logger.log("Successfully Recieved.");
+  }
+  catch (error){
+    Logger.log("No data found. Use test data.");
+    // テスト用データ
+    var params = JSON.parse('{"sheet_name":"sensor2","temperature":99.99, "humidity":10.00, "pressure": 1001.1}');
+    // var params = JSON.parse('{"temperature":99.99, "humidity":10.00, "pressure": 1001.1}');
+    // var params = JSON.parse('{"sheet_name":"sensor2","temperature":22.10}');
+  }
+  
+  //  データの取り出し 
   var sheet_name = params.sheet_name;   //"sheet_name"のデータを取り出す
+  // シート名の指定がなければデフォルトのシート名にデータを追記する
+  if (!sheet_name) {
+    var sheet_name = 'sensor1';
+  }
+  // JSONでのデータのインデックス名と同じメンバー名で各データにアクセスします
   var temperature = params.temperature;
   var humidity = params.humidity;
   var pressure = params.pressure;
 
-  // console.log(sheet_name);
-  // console.log(temperature);
+  Logger.log(sheet_name);
+  Logger.log(temperature);
 
+  // データを追記するシートを読み出します。
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheet_name);
+
+  //　指定したシートがない場合の処理;
   if (!sheet) {
-    //　指定したシートがない場合の処理;
-    //  シートを作成し、ヘッダ行を追記
+    //  指定された名前でシートを作成し、ヘッダ行を追記（ヘッダ行は適宜変更してください）
     addSheet(sheet_name);
     var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheet_name);
     sheet.getRange(1, 1).setValue('Date-Time');
     sheet.getRange(1, 2).setValue('temperature');
-    sheet.getRange(1, 3).setValue('humidity!!');
+    sheet.getRange(1, 3).setValue('humidity');
     sheet.getRange(1, 4).setValue('pressure');
   }
 
@@ -35,32 +54,11 @@ function doPost(e) {
   sheet.getRange(2, 3).setValue(humidity);        // 湿度を記録
   sheet.getRange(2, 4).setValue(pressure);        // 気圧を記録
 
-  return; // エラーかどうかを返した方がいいかも
-  // return HtmlService.createHtmlOutput('<b>Got it</b>');
-  // return ContentService.createTextOutput("受付けました。");
+  return;
 }
 
 
-// (1) リクエストを受け取ると doGet が実行される
+// (1) GETリクエストを受け取ると doGet が実行される
 function doGet() {
-  // // (2) Spreadsheet からデータを読み込む
-  let sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('sensor1');
-  let values = sheet.getRange('B2').getValues();
-  console.log(values);
-
-  // // (3) テンプレートを使ってHTML文書を作って return
-  // let template = HtmlService.createTemplateFromFile("list");
-  // template.links = values; // こうしておくとテンプレートの方で links という変数に値が入った状態で使える
-  // // return template.evaluate();
-  // return HtmlService.createHtmlOutput('<b>Hello, world!</b>');
-  // (3) テンプレートを使ってHTML文書を作って return
-  let template = HtmlService.createTemplateFromFile("list");
-  template.values = values; // こうしておくとテンプレートの方で links という変数に値が入った状態で使える
-  // return template.evaluate();
-  const out=ContentService.createTextOutput();
-  out.setMimeType(ContentService.MimeType.JSON);
-  // out.setContent("{444:123}");
-  out.setContent(values);
-  console.log(out);
-  return  template.evaluate();
+ 
 }
