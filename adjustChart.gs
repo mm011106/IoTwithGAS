@@ -1,15 +1,15 @@
 // グラフのデータ範囲を調整して、最新のデータだけをグラフにするための関数群
 
 // 指定されたグラフのデータ範囲を最新のデータだけに更新する
-// 　　引数：グラフオブジェクト　
-// 　　戻り値：なし
-// 　
+//    引数：グラフオブジェクト
+//    戻り値：なし
+//  
 function adjustGraphRange(chart) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
 
   // 新しいデータ範囲を指定
   var newDataRange = sheet.getRange("A1:B1000"); // 必要な範囲を指定 
-  // ここでは999個のデータをグラフ化するように設定　10分間隔のサンプリングで大体１週間分
+  // ここでは999個のデータをグラフ化するように設定 10分間隔のサンプリングで大体１週間分
 
   // グラフのビルダーを取得し、データ範囲を更新
   var chartBuilder = chart.modify();
@@ -20,7 +20,7 @@ function adjustGraphRange(chart) {
   chartBuilder.setOption('hAxis.gridlines', { count: 5 });  // 水平軸の主要グリッド線 count はグリッド線の数
   chartBuilder.setOption('hAxis.minorGridlines', { count: 0 }); // 水平軸の副グリッド線を非表示
 
-  chartBuilder.setOption('vAxis.gridlines', { count: 5 }); // 垂直軸の主要グリッド線　count はグリッド線の数
+  chartBuilder.setOption('vAxis.gridlines', { count: 5 }); // 垂直軸の主要グリッド線 count はグリッド線の数
   chartBuilder.setOption('vAxis.minorGridlines', { count: 0 }); // 垂直軸の副グリッド線を非表示
   
   // グラフを更新
@@ -31,9 +31,9 @@ function adjustGraphRange(chart) {
 }
 
 // シート内にあるグラフを「グラフ名」で探してグラフオブジェクトを返す
-// 　　引数：グラフ名（文字列）
-// 　　戻り値：グラフオブジェクト（指定した名前のグラフがシート内にあった場合）
-// 　　　　　　null (指定した名前のグラフが存在しない場合)
+//   引数：グラフ名（文字列）
+//   戻り値：グラフオブジェクト（指定した名前のグラフがシート内にあった場合）
+//          null (指定した名前のグラフが存在しない場合)
 // 
 function getChartByTitle(targetTitle) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
@@ -51,7 +51,7 @@ function getChartByTitle(targetTitle) {
 }
 
 // グラフのデータ範囲を再設定するために実際に外部から呼び出す関数
-// 　　タイマなどで1日に1回実行する
+//   タイマなどで1日に1回実行する
 // 
 function chartRangeRenew(){
   // 現在アクティブなシート内にある’気温’と名前のついたグラフを探します。

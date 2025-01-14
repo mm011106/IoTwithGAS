@@ -1,3 +1,8 @@
+// device : M5Stack AtomS3/AtomS3Lite
+// needs : M5Stack ENV-IV unit
+//          Wifi
+//          Google sheet + GAS in order to receive data from the device
+// 
 #define FASTLED_INTERNAL
 
 #include <M5AtomS3.h>
@@ -5,7 +10,11 @@
 #include <HTTPClient.h>
 #include <Adafruit_SHT4x.h>
 
-#include "connection_IDs.h"
+// wifi: SSID, PASSWORD
+// API-URL: API_URL
+// SensorID: SENSOR_ID
+#include "connection_ids.h"
+
 
 constexpr bool SLEEP_AND_REPEAT = true;
 constexpr uint16_t SLEEP_DURATION = 10;  //スリープ時間設定 [min]
@@ -16,12 +25,10 @@ uint32_t timestamp = 0; // 測定時間を計測して保存する[ms]
 
 void post(float value) {
   HTTPClient http;
-  http.begin(API_URL);  // API_URL is defined in "connection_IDs.h"
+  http.begin(API_URL);
   http.addHeader("Content-Type", "application/json");
-  // auto value = 22.4;
-  String payload = "{\"item\":"+String(value)+"}";
+  String payload = "{\"sheet_name\":\""+String(SENSOR_ID)+"\",\"temperature\":"+String(value)+"}";
   Serial.println(payload);
-  // http.POST("{\"item\": \"AtomS3\"}");
   http.POST(payload);
   Serial.println(http.getString());
   http.end();
@@ -29,10 +36,10 @@ void post(float value) {
 }
 
 void setup() {
+  timestamp = millis();
   M5.begin();
   M5.Lcd.sleep();; //turn off the LCD backlight
   Serial.begin(115200);
-  timestamp = millis();
 
   Wire.begin(2,1);  //I2Cで使うPINを指定 SH4xだけ使う場合は必要
 
@@ -87,8 +94,8 @@ void setup() {
   }
 
   // wifi setup
-  Serial.print("WiFi connecting to :"); Serial.println(ssid);
-  WiFi.begin(SSID, PASSWORD);  // defined in "connection_IDs.h"
+  Serial.print("WiFi connecting to :"); Serial.println(SSID);
+  WiFi.begin(SSID, PASSWORD);
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
     delay(100);
@@ -105,13 +112,12 @@ void setup() {
   post(temp.temperature);
 
   timestamp = millis() - timestamp;
-  Serial.print("Temperature[ms]: "); Serial.println(timestamp);
+  Serial.print("Working time[ms]: "); Serial.println(timestamp);
 }
 
 void loop() {
   uint32_t sleep_time_in_us = (SLEEP_DURATION * 60 * 1000 - timestamp) * 1000;
   if (SLEEP_AND_REPEAT){
-    // esp_sleep_enable_timer_wakeup(300*1000*1000);  // deep sleep for 5min
     esp_sleep_enable_timer_wakeup(sleep_time_in_us);  // deep sleep for SLEEP_DULATION
     esp_deep_sleep_start();    
   }
