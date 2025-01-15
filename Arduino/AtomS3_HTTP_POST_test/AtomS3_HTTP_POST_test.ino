@@ -1,7 +1,7 @@
 // device : M5Stack AtomS3/AtomS3Lite
 // needs : M5Stack ENV-IV unit
 //          Wifi
-//          Google sheet + GAS in order to receive data from the device
+//          Google sheet + GAS in order to store data from the device
 // 
 #define FASTLED_INTERNAL
 
@@ -38,7 +38,7 @@ void post(float value) {
 void setup() {
   timestamp = millis();
   M5.begin();
-  M5.Lcd.sleep();; //turn off the LCD backlight
+  M5.Lcd.sleep();; //turn off the LCD backlight on AtomS3
   Serial.begin(115200);
 
   Wire.begin(2,1);  //I2Cで使うPINを指定 SH4xだけ使う場合は必要
