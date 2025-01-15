@@ -1,3 +1,7 @@
+
+//  指定されたシート名のシートがない場合に新しくシートを作る関数
+//    引数：シート名 
+// 
 function addSheet(newSheetName) {
   // アクティブなスプレッドシートを取得
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
