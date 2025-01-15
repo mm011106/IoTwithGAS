@@ -1,15 +1,15 @@
 // web app
 // Postリクエストを受け付けた場合の処理
-// 　　リクエストに含まれるJSONデータをパースして処理
-// 　　　sheet_name:データを追加するシート名
-// 　　　temperature:データ本体
+// 		リクエストに含まれるJSONデータをパースして処理
+// 			sheet_name:データを追加するシート名
+// 			temperature:データ本体
 
 function doPost(e) {
   // 送信されてくるJSONデータから、要素を取り出す
   //  JSONデータがついていないPOSTではテストデータを使う
   try{
     var params = JSON.parse(e.postData.getDataAsString());
-    Logger.log("Successfully Recieved.");
+    Logger.log("Successfully Received JSON data.");
   }
   catch (error){
     Logger.log("No data found. Use test data.");
@@ -20,12 +20,12 @@ function doPost(e) {
   }
   
   //  データの取り出し 
+  // JSONのインデックス名と同じメンバー名で各データにアクセスします
   var sheet_name = params.sheet_name;   //"sheet_name"のデータを取り出す
   // シート名の指定がなければデフォルトのシート名にデータを追記する
   if (!sheet_name) {
     var sheet_name = 'sensor1';
   }
-  // JSONでのデータのインデックス名と同じメンバー名で各データにアクセスします
   var temperature = params.temperature;
   var humidity = params.humidity;
   var pressure = params.pressure;
@@ -36,7 +36,7 @@ function doPost(e) {
   // データを追記するシートを読み出します。
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheet_name);
 
-  //　指定したシートがない場合の処理;
+  //	指定したシートがない場合の処理;
   if (!sheet) {
     //  指定された名前でシートを作成し、ヘッダ行を追記（ヘッダ行は適宜変更してください）
     addSheet(sheet_name);
